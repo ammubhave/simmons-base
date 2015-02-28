@@ -1,13 +1,13 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import CreateView, DetailView, DeleteView, ListView, UpdateView
 
-from braces.views import LoginRequiredMixin
+from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 
 from ..forms import RegistrationForm
 from ..models import get_application_model
 
 
-class ApplicationOwnerIsUserMixin(LoginRequiredMixin):
+class ApplicationOwnerIsUserMixin(LoginRequiredMixin, SuperuserRequiredMixin):
     """
     This mixin is used to provide an Application queryset filtered by the current request.user.
     """
@@ -16,10 +16,11 @@ class ApplicationOwnerIsUserMixin(LoginRequiredMixin):
 
     def get_queryset(self):
         queryset = super(ApplicationOwnerIsUserMixin, self).get_queryset()
-        return queryset.filter(user=self.request.user)
+        return queryset.all()
+        #return queryset.filter(user=self.request.user)
 
 
-class ApplicationRegistration(LoginRequiredMixin, CreateView):
+class ApplicationRegistration(LoginRequiredMixin, SuperuserRequiredMixin, CreateView):
     """
     View used to register a new Application for the request.user
     """

@@ -1,0 +1,21 @@
+SetEnv PROCESS_GROUP dp_api
+AddHandler wsgi-script .py
+Options +ExecCGI
+
+RewriteEngine On
+RewriteBase /api
+
+RewriteCond %{HTTPS} off 
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L]
+
+RewriteRule ^static/(.+)$ api_server/static/$1 [L]
+RewriteRule ^(api_server/static/.+)$ - [L]
+
+RewriteCond %{REQUEST_URI} ^/api/$
+RewriteRule ^$ api_server/api_server/wsgi.py [L,E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+RewriteCond %{REQUEST_URI} !/api/api_server/api_server/wsgi.py
+RewriteRule ^(.*)$ api_server/api_server/wsgi.py/$1 [L,E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+SSLVerifyClient optional
+SSLOptions +StdEnvVars

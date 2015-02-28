@@ -1,16 +1,29 @@
 from django.conf import settings
+from django.contrib.auth.backends import RemoteUserBackend
 from django.contrib.auth.models import User
+import logging
 
-class SimmonsAuthBackend(object):
-    def authenticate(self, username=None, password=None):
+class SimmonsAuthBackend(RemoteUserBackend):
+    def clean_username(self, username):
+        if '@' in username:
+            name, domain = username.split('@')
+            assert domain.upper() == 'MIT.EDU'
+            return name
+        else:
+            return username
+
+    def authenticate(self, remote_user=None):
+       # raise Exception(remote_user)
+        logging.info('autheticate(' + remote_user + ')')
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=remote_user)
             return user
         except User.DoesNotExist:
             pass
         return None
 
     def get_user(self, user_id):
+        logging.info('get_user(' + str(user_id) + ')')
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:

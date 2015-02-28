@@ -38,11 +38,14 @@ class OAuthLibCore(object):
         uri = self._get_escaped_full_path(request)
         http_method = request.method
         headers = request.META.copy()
+
         if 'wsgi.input' in headers:
             del headers['wsgi.input']
         if 'wsgi.errors' in headers:
             del headers['wsgi.errors']
-        if 'HTTP_AUTHORIZATION' in headers:
+        if 'REDIRECT_HTTP_AUTHORIZATION' in headers:
+            headers['Authorization'] = headers['REDIRECT_HTTP_AUTHORIZATION']
+        elif 'HTTP_AUTHORIZATION' in headers:
             headers['Authorization'] = headers['HTTP_AUTHORIZATION']
         body = urlencode(request.POST.items())
         return uri, http_method, body, headers
@@ -131,6 +134,9 @@ class OAuthLibCore(object):
         :param scopes: A list of scopes required to verify so that request is verified
         """
         uri, http_method, body, headers = self._extract_params(request)
+
+        if http_method == 'OPTIONS':
+            return True, None
 
         valid, r = self.server.verify_request(uri, http_method, body, headers, scopes=scopes)
         return valid, r

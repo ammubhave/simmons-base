@@ -1,0 +1,12 @@
+{% extends 'error_base.html' %}
+
+{% block title %}404 Not Found{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1>404</h1>
+    <h2>Not Found</h2>
+    <br />
+    <p class="lead">The requested URL {{ request_path }} was not found on this server.</p>
+</div>
+{% endblock content %}

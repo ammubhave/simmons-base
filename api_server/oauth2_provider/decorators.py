@@ -2,6 +2,7 @@ from functools import wraps
 
 from oauthlib.oauth2 import Server
 from django.http import HttpResponseForbidden
+from django.shortcuts import render
 from django.core.exceptions import ImproperlyConfigured
 
 from .oauth2_validators import OAuth2Validator
@@ -29,9 +30,12 @@ def protected_resource(scopes=None, validator_cls=OAuth2Validator, server_cls=Se
             validator = validator_cls()
             core = OAuthLibCore(server_cls(validator))
             valid, oauthlib_req = core.verify_request(request, scopes=_scopes)
+
             if valid:
-                request.resource_owner = oauthlib_req.user
+                if request.method != 'OPTIONS':
+                    request.resource_owner = oauthlib_req.user
                 return view_func(request, *args, **kwargs)
+            return render(request, '403.html', status=403)
             return HttpResponseForbidden()
         return _validate
     return decorator
