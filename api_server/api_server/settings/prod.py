@@ -8,7 +8,7 @@ with open(os.path.join(EXTERNAL_CONFIG, 'secret_key'), 'r') as f:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['simmons-dev.mit.edu', 'simmons.mit.edu']
 
@@ -33,12 +33,15 @@ DATABASES = {
         'NAME': 'sdb',
         'USER': 'api',
         'PASSWORD': _sdb_password,
-        'HOST': 'simmons.mit.edu',
+        'HOST': 'seagull.mit.edu',
         'PORT': 5432,
     }
 }
 
+DATABASE_ROUTERS = ['api_server.sdb_utils.SdbRouter']
+
 MIDDLEWARE_CLASSES = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +51,11 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+INTERNAL_IPS = ('2001:4830:2446:60:2289:84ff:fed3:d286','127.0.0.1',)
+def show_toolbar(request):
+    return True
+SHOW_TOOLBAR_CALLBACK = show_toolbar
 
 INSTALLED_APPS = INSTALLED_APPS + [
     'debug_toolbar',
@@ -76,6 +84,6 @@ LOGGING = {
     }
 }
 
-CORS_ORIGIN_REGEX_WHITELIST = ("""^(https?://)?(\w+\.)?simmons(-dev)?\.mit\.edu$""", )
+CORS_ORIGIN_REGEX_WHITELIST = ("""^(https?://)?(\w+\.)?simmons(-dev)?\.mit\.edu$""", """^(https?://)?localhost(:\d+)?$""")
 
 LOGIN_URL = '/api/admin/login/'
