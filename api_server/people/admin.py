@@ -3,6 +3,7 @@ from models import Directory
 from api_server.sdb_models import SDB_sds_users_all
 from django.utils.http import quote
 from django import forms
+from django.db import connections
 #from urllib import quote
 
 class DirectoryModelAdminForm(forms.ModelForm):
@@ -54,18 +55,24 @@ class DirectoryModelAdmin(admin.ModelAdmin):
         #raise Exception(str(form.changed_data))
 
         if change:
-            pass # this is save
+            old_obj = Directory.objects.get(username=obj.username)
+            #raise Exception(str(old_obj.room) +  " + " + str(form.cleaned_data['room']))
+            if old_obj.room != form.cleaned_data['room']:
+                cursor = connections['sdb'].cursor()
+                if old_obj.room is not None and old_obj.room != '':
+                    cursor.execute("UPDATE old_room_assignments SET moveout = now() WHERE username = %s AND room = %s", (obj.username, old_obj.room))
+                if form.cleaned_data['room'] is not None and form.cleaned_data['room'] != '':
+                    cursor.execute('INSERT INTO old_room_assignments (username, room) VALUES (%s, %s)', (obj.username, form.cleaned_data['room']))
         else:
             # this is an insert
             SDB_sds_users_all.objects.create(username=form.cleaned_data['username'], active=True, immortal=False)
             if (form.cleaned_data['room'] is not None and form.cleaned_data['room'] != ''):
-                SDB_old_room_assignments.objects.create(username=form.cleaned_data['username'], room=form.cleaned_data['room'])
+                cursor = connections['sdb'].cursor()
+                cursor.execute('INSERT INTO old_room_assignments (username, room) VALUES (%s, %s)', (form.cleaned_data['username'], form.cleaned_data['room']))
+                #SDB_old_room_assignments.objects.create(username=form.cleaned_data['username'], room=form.cleaned_data['room'])
+        return super(DirectoryModelAdmin, self).save_model(request, obj, form, change)
 
-            
-        raise Exception('save on this model is not permitted.')
-
-    #def get_queryset(self, request):
-    #    return super(DirectoryModelAdmin, self).get_queryset(request).using(self.using).filter(private=False, username__in=)
+        #raise Exception('save on this model is not permitted.')
 
     def delete_model(self, request, obj):
         raise Exception('delete on this model is not permitted.')

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from sdb_models import SDB_sds_users_all
 
 class SdbReadonlyModelAdmin(admin.ModelAdmin):
     using = 'sdb'
@@ -23,5 +24,15 @@ class SdbReadonlyModelAdmin(admin.ModelAdmin):
     def delete_model(self, request, obj):
         raise Exception('delete on this model is not permitted.')
 
-    def get_queryset(self, request):
-        return super(SdbReadonlyModelAdmin, self).get_queryset(request).using(self.using)
+    #def get_queryset(self, request):
+    #    return super(SdbReadonlyModelAdmin, self).get_queryset(request).using(self.using)
+
+
+# class SDB_sds_users_all_ModelAdmin(SdbReadonlyModelAdmin):
+#     search_fields = ('username', 'firstname', 'lastname')
+#     list_display = ('username','firstname','lastname', 'title', 'room', 'year')
+
+#     def get_queryset(self, request):
+#         return super(SDB_sds_users_all_ModelAdmin, self).get_queryset(request)
+
+# admin.site.register(SDB_sds_users_all, SDB_sds_users_all_ModelAdmin)

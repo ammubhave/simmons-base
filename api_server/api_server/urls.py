@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'api_server.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^people/', include('people.urls')),
+    url(r'^sevenk/', include('sevenk.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),

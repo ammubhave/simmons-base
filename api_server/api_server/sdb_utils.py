@@ -5,6 +5,10 @@ SDB_MODELS = (
     ('people', 'directory'),
     ('people', 'public_active_directory'),
     ('people', 'sds_users_all'),
+
+    ('packages', 'packages'),
+
+    ('api_server', 'sds_users_all'),
 )
 def check_in_sdb(model):
     return (model._meta.app_label, model._meta.db_table) in SDB_MODELS
@@ -36,7 +40,7 @@ class SdbRouter(object):
             return True
 
 class SdbManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(SdbManager, self).get_query_set().using('sdb')
         # qs = super(MultiDBManager, self).get_query_set()
         # qs.query.connection = self.get_db_wrapper()

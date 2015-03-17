@@ -190,4 +190,36 @@ sim = new function () {
             }
         });
     };
+
+    this.people.get_fsof = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/people/fifteen_seconds_of_frame',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
+            //console.log(data);
+            success(data);
+        }).error(function(x, status, error) {
+            if (x.status == 403) {
+                $.removeCookie('access_token');
+                sim.login();
+            }
+        });
+    };
+
+    this.people.me = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/people/me',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
+            //console.log(data);
+            success(data);
+        }).error(function(x, status, error) {
+            if (x.status == 403) {
+                $.removeCookie('access_token');
+                sim.login();
+            }
+        });
+    };
 }

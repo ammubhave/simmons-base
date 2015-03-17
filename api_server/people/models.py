@@ -5,7 +5,7 @@ from api_server.sdb_utils import NullableCharField
 
 
 class DirectoryManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(DirectoryManager, self).get_query_set().filter(username__in=[u.username for u in User.objects.all()])
 
 
@@ -14,7 +14,7 @@ class Directory(models.Model):
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
     room = NullableCharField(max_length=255, null=True, blank=True)
-    year = NullableCharField(null=True, blank=True)
+    year = NullableCharField(max_length=255, null=True, blank=True)
     cellphone = models.CharField(max_length=255, null=True, blank=True)
     homepage = models.CharField(max_length=255, null=True, blank=True)
     home_city = models.CharField(max_length=255, null=True, blank=True)
@@ -57,6 +57,13 @@ class Directory(models.Model):
     def delete(self, *args, **kwargs):
         raise Exception('You should not be calling delete on this model (directory)')
 
+    @staticmethod
+    def random():
+        import random as r
+        count = Directory.objects.count()
+        random_index = r.randint(0, count - 1)
+        return Directory.objects.all()[random_index]
+
     #objects = SdbManager()
 
     class Meta:
@@ -66,4 +73,4 @@ class Directory(models.Model):
         verbose_name_plural = 'Directory Entries'
 
     def __unicode__(self):
-        return self.username
+        return '%s %s (%s)' % (self.firstname, self.lastname, self.username)

@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'api_server',
     'people',
+    'packages',
+    'sevenk',
 ]
 
 ROOT_URLCONF = 'api_server.urls'

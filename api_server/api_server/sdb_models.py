@@ -1,6 +1,6 @@
 from django.db import models
 from api_server.sdb_utils import NullableCharField
-from composite_field import CompositeField
+#from composite_field import CompositeField
 
 class SDB_sds_users_all(models.Model):
     username = models.CharField(max_length=255, primary_key=True)
@@ -13,6 +13,9 @@ class SDB_sds_users_all(models.Model):
     class Meta:
         db_table = 'sds_users_all'
         managed = False
+
+    def __unicode__(self):
+        return self.username
 
 class SDB_old_room_assignments(models.Model):
     username = models.ForeignKey(SDB_sds_users_all)

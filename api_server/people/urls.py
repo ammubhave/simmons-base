@@ -7,4 +7,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^full$', 'people.views.full'),
     url(r'^profile/(?P<username>\w+)$', people.views.Profile.as_view()),
+    url(r'^fifteen_seconds_of_frame$', 'people.views.get_fifteen_seconds_of_frame'),
+    url(r'^me$', 'people.views.me'),
 )

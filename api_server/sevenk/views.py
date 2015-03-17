@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 @protected_resource()
-def full(request):
+def my_uploads(request):
     result = Directory.objects.all()
     result = [{
         'username': entry.username,
@@ -21,43 +21,8 @@ def full(request):
     } for entry in result]
     return JsonResponse(result, safe=False)
 
-@protected_resource()
-def get_fifteen_seconds_of_frame(request):
-    result = Directory.random()
-    result = {
-        'username': result.username,
-        'firstname': result.firstname,
-        'lastname': result.lastname,
-        'title': result.title,
-        'year': str(result.year),
-        'type': result.get_type_display(),
-        'homepage': result.homepage,
-        'home_city': result.home_city,
-        'home_state': result.home_state,
-        'home_country': result.home_country,
-        'quote': result.quote,
-    }
-    return JsonResponse(result, safe=False)
 
-@protected_resource()
-def me(request):
-    result = Directory.objects.get(username=request.user.username)
-    result = {
-        'username': result.username,
-        'firstname': result.firstname,
-        'lastname': result.lastname,
-        'title': result.title,
-        'year': str(result.year),
-        'type': result.get_type_display(),
-        'homepage': result.homepage,
-        'home_city': result.home_city,
-        'home_state': result.home_state,
-        'home_country': result.home_country,
-        'quote': result.quote,
-    }
-    return JsonResponse(result, safe=False)
-
-class Profile(ProtectedResourceView):
+class Entry(ProtectedResourceView):
     def get(self, request, username):
         result = Directory.objects.get(username=username)
         result = {
