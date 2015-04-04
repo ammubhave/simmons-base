@@ -35,7 +35,15 @@ DATABASES = {
         'PASSWORD': _sdb_password,
         'HOST': 'seagull.mit.edu',
         'PORT': 5432,
-    }
+    },
+    'scripts_rooming': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'simmons-hall+rooming1',
+        'OPTIONS': {
+            'read_default_file' : os.path.join(EXTERNAL_CONFIG, 'scripts.my.cnf'),
+        },
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    },
 }
 
 DATABASE_ROUTERS = ['api_server.sdb_utils.SdbRouter']
@@ -48,6 +56,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'auth.middleware.SimmonsAuthMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -63,7 +72,7 @@ INSTALLED_APPS = INSTALLED_APPS + [
 
 STATIC_URL = '/api/static/'
 
-AUTHENTICATION_BACKENDS = ('auth.backend.SimmonsAuthBackend',)
+AUTHENTICATION_BACKENDS = ('auth.backend.SimmonsAuthBackend','oauth2_provider.backends.OAuth2Backend')
 
 LOGGING = {
     'version': 1,

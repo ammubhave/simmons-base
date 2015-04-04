@@ -41,6 +41,7 @@ def get_fifteen_seconds_of_frame(request):
 
 @protected_resource()
 def me(request):
+    #raise Exception(str(request.user.is_authenticated()))
     result = Directory.objects.get(username=request.user.username)
     result = {
         'username': result.username,

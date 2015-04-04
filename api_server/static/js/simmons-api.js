@@ -158,6 +158,19 @@ sim = new function () {
         xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('access_token'));
     }
 
+    function api_error_callback(x, status, error) {
+        if (x.status == 403) {
+            if ($.cookie('access_token') != undefined) {
+                $.removeCookie('access_token');
+                sim.login();
+            } else {
+                alert('Unable to login to Simmons API, please contact simmons-tech@mit.edu');
+            }
+        } else {
+            console.error('API call failed: ' + status + ' ' + error);
+        }
+    }
+
     this.people = new function() { };
     this.people.all = function(success) {
         $.ajax({
@@ -167,12 +180,7 @@ sim = new function () {
         }).done(function (data) {
             //console.log(data);
             success(data);
-        }).error(function(x, status, error) {
-            if (x.status == 403) {
-                $.removeCookie('access_token');
-                sim.login();
-            }
-        });
+        }).error(api_error_callback);
     };
 
     this.people.get = function(username, success) {
@@ -183,12 +191,7 @@ sim = new function () {
         }).done(function (data) {
             //console.log(data);
             success(data);
-        }).error(function(x, status, error) {
-            if (x.status == 403) {
-                $.removeCookie('access_token');
-                sim.login();
-            }
-        });
+        }).error(api_error_callback);
     };
 
     this.people.get_fsof = function(success) {
@@ -199,12 +202,7 @@ sim = new function () {
         }).done(function (data) {
             //console.log(data);
             success(data);
-        }).error(function(x, status, error) {
-            if (x.status == 403) {
-                $.removeCookie('access_token');
-                sim.login();
-            }
-        });
+        }).error(api_error_callback);
     };
 
     this.people.me = function(success) {
@@ -215,11 +213,29 @@ sim = new function () {
         }).done(function (data) {
             //console.log(data);
             success(data);
-        }).error(function(x, status, error) {
-            if (x.status == 403) {
-                $.removeCookie('access_token');
-                sim.login();
-            }
-        });
+        }).error(api_error_callback);
     };
+
+    /** ROOMING **/
+    this.rooming = new function() { };
+    this.rooming.taken = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/rooming/taken',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
+            //console.log(data);
+            success(data);
+        }).error(api_error_callback);
+    }
+    this.rooming.occupants = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/rooming/occupants',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
+            //console.log(data);
+            success(data);
+        }).error(api_error_callback);
+    }
 }

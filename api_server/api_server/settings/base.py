@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'people',
     'packages',
     'sevenk',
+    'rooming',
 ]
 
 ROOT_URLCONF = 'api_server.urls'
@@ -62,7 +63,7 @@ CORS_ALLOW_HEADERS = (
     'accept',
     'origin',
     'authorization',
-    'x-csrftoken'
+    'x-csrftoken',
 )
 
 TEMPLATE_DIRS = (

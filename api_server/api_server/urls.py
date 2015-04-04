@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^people/', include('people.urls')),
     url(r'^sevenk/', include('sevenk.urls')),
+    url(r'^rooming/', include('rooming.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),

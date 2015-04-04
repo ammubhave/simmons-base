@@ -34,6 +34,7 @@ def protected_resource(scopes=None, validator_cls=OAuth2Validator, server_cls=Se
             if valid:
                 if request.method != 'OPTIONS':
                     request.resource_owner = oauthlib_req.user
+                    #raise Exception(str(oauthlib_req.user))
                 return view_func(request, *args, **kwargs)
             return render(request, '403.html', status=403)
             return HttpResponseForbidden()
