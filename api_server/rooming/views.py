@@ -52,7 +52,8 @@ def run_randomization(request):
         #################################
 
         RANDOM_SEED = int(request.POST['randomseed'])
-        YEARS_ORDER = ["Junior", "Incoming Junior", "Sophomore", "Incoming Sophomore", "Freshman", "Incoming Freshman"]
+       # YEARS_ORDER = ["Junior", "Incoming Junior", "Sophomore", "Incoming Sophomore", "Freshman", "Incoming Freshman"]
+        YEARS_ORDER = ["Senior", "Incoming Senior", "9th/10th term", "Incoming 9th/10th term", "Junior", "Incoming Junior", "Sophomore", "Incoming Sophomore"]
         OUTPUT_FILENAME = "/tmp/out.csv"
 
         import csv, random
