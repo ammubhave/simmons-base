@@ -51,40 +51,29 @@ def run_randomization(request):
         #
         #################################
 
+        RANDOM_SEED = int(request.POST['randomseed'])
+        YEARS_ORDER = ["Junior", "Incoming Junior", "Sophomore", "Incoming Sophomore", "Freshman", "Incoming Freshman"]
+        OUTPUT_FILENAME = "/tmp/out.csv"
+
         import csv, random
         from collections import defaultdict
 
-        RANDOM_SEED = int(request.POST['randomseed'])
-        YEARS_ORDER = ["Junior", "Sophomore", "Incoming Sophomore", "Freshman", "Incoming Freshman"]
-        OUTPUT_FILENAME = "/tmp/out.csv"
-
-        def initRandom():
-            random.seed(RANDOM_SEED)
-
-        # Returns a shuffled copy of the given list.
-        def shuffleList(originalList):
-            newList = originalList[:]
-            random.shuffle(newList)
-            return newList
-
-        # Generates namesDict, a mapping from year names to lists of names in that year.
-        def setupNamesDict():
+        # Reads the names dictionary from the input file.
+        def importNames():
+            # Setting up namesDict, a mapping from year names to lists of names in that year.
             namesDict = dict()
             for year in YEARS_ORDER:
                 namesDict[year] = []
-            return namesDict
 
-        # Reads the names dictionary from the input file.
-        def importNames():
-            namesDict = setupNamesDict()
+            # Reads the names and years from the input CSV file.
             csvFile = request.FILES['incsv']
             csvReader = csv.reader(csvFile, delimiter=',')
             for row in csvReader:
                 name = row[0]
                 year = row[1]
                 if year not in namesDict:
-                    print "ERROR: ", name, "has invalid year", year
-                else:
+                    print "ERROR:", name, "has invalid year", year
+                else: 
                     namesDict[year].append(name)
             return namesDict
 
@@ -92,7 +81,9 @@ def run_randomization(request):
         def shuffleNames(namesDict):
             shuffledNamesDict = dict()
             for (year, namesList) in namesDict.items():
-                shuffledNamesDict[year] = shuffleList(namesList)
+                # Copies and randomly shuffles the names list.
+                shuffledNamesDict[year] = namesList[:]
+                random.shuffle(shuffledNamesDict[year])
             return shuffledNamesDict
 
         # Merges the years into a list of tuples [(name, year, finalCount)]
@@ -115,16 +106,13 @@ def run_randomization(request):
                 csvWriter.writerow(orderTuple)
             outFile.close()
 
-        # Runs the process.
-        def main():
-            initRandom()
-            namesDict = importNames()
-            shuffledNamesDict = shuffleNames(namesDict)
-            finalOrder = getFinalOrder(shuffledNamesDict)
-            exportNames(OUTPUT_FILENAME, finalOrder)
 
         # Kick it off!
-        main()
+        random.seed(RANDOM_SEED)
+        namesDict = importNames()
+        shuffledNamesDict = shuffleNames(namesDict)
+        finalOrder = getFinalOrder(shuffledNamesDict)
+        exportNames(OUTPUT_FILENAME, finalOrder)
         with open(OUTPUT_FILENAME, 'r') as myfile:
             response = HttpResponse(myfile.read(), content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename=out.csv'
