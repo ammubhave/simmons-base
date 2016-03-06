@@ -13,12 +13,12 @@ class PackageManager(models.Manager):
 
 class Package(models.Model):
     packageid = models.AutoField(primary_key=True)
-    recipient = models.ForeignKey(Directory, db_column='recipient', related_name='recipient')
+    recipient = models.ForeignKey(Directory, db_column='recipient')#, related_name='recipient')
     bin = models.CharField(max_length=255)
     checkin = models.DateTimeField(auto_now_add=True)
-    checkin_by = models.ForeignKey(Directory, db_column='checkin_by', related_name='checkin_by')
+    checkin_by = models.ForeignKey(Directory, db_column='checkin_by')#, related_name='checkin_by')
     pickup = models.DateTimeField(null=True, blank=True)
-    pickup_by = models.ForeignKey(Directory, null=True, blank=True, db_column='pickup_by', related_name='pickup_by')
+    pickup_by = models.ForeignKey(Directory, null=True, blank=True, db_column='pickup_by')#, related_name='pickup_by')
     perishable = models.BooleanField(default=False)
 
     objects = PackageManager()

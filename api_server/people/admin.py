@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Directory
+from models import Directory, Medlink
 from api_server.sdb_models import SDB_sds_users_all
 from django.utils.http import quote
 from django import forms
@@ -17,9 +17,9 @@ class DirectoryModelAdminForm(forms.ModelForm):
 
 class DirectoryModelAdmin(admin.ModelAdmin):
     form = DirectoryModelAdminForm
-    list_filter = ('type','year',) # lounge foriegn field
+    list_filter = ('type','year') # lounge foriegn field
     search_fields = ('username','title','firstname','lastname','home_city','home_state','home_country')
-    list_display = ('username','title','firstname', 'lastname','year','room','email','type')
+    list_display = ('username','title','firstname', 'lastname','year','room','email','type','lounge')
     list_editable = ('title','room')
     fieldsets = (
         (None, {
@@ -27,7 +27,7 @@ class DirectoryModelAdmin(admin.ModelAdmin):
         }),
         ('Directory Information', {
             'classes': ('collapse',),
-            'fields': ('homepage', 'cellphone', 'home_city', 'home_state', 'home_country', 'quote', 'favorite_category', 'favorite_value')
+            'fields': ('lounge','homepage', 'cellphone', 'home_city', 'home_state', 'home_country', 'quote', 'favorite_category', 'favorite_value')
         })
     )
     # raw_id_fields = ('',)
@@ -78,3 +78,18 @@ class DirectoryModelAdmin(admin.ModelAdmin):
         raise Exception('delete on this model is not permitted.')
 
 admin.site.register(Directory, DirectoryModelAdmin)
+
+
+class MedlinkModelAdmin(admin.ModelAdmin):
+    search_fields = ('username__username', 'username__firstname', 'username__lastname')
+    raw_id_fields = ('username')
+    # def view_on_site(self, obj):
+    #     return 'https://seagull.mit.edu/sds/directory/entry.php?username=' + quote(str(obj.username))
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def delete_model(self, request, obj):
+        raise Exception('delete on this model is not permitted.')
+
+admin.site.register(Medlink, MedlinkModelAdmin)

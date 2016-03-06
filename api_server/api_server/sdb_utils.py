@@ -12,10 +12,13 @@ from django.db.models import CharField
 # )
 
 DB_MAP = {
+    ('lounges', 'lounges'): 'sdb',
     ('people', 'directory'): 'sdb',
     ('people', 'public_active_directory'): 'sdb',
     ('people', 'sds_users_all'): 'sdb',
+    ('people', 'medlinks'): 'sdb',
     ('packages', 'packages'): 'sdb',
+    ('guestlist', 'guest_list'): 'sdb',
     ('api_server', 'sds_users_all'): 'sdb',
 
     ('rooming', 'rooming_room'): 'scripts_rooming',
@@ -29,26 +32,26 @@ def check_in_db_map(model):
 #def check_in_sdb(model):
 #    return (model._meta.app_label, model._meta.db_table) in SDB_MODELS
 
-class SdbRouter(object): 
+class SdbRouter(object):
     def db_for_read(self, model, **hints):
         if check_in_db_map(model):
             return DB_MAP[(model._meta.app_label, model._meta.db_table)] #'sdb'
         return None
 
-    def db_for_write(self, model, **hints):        
+    def db_for_write(self, model, **hints):
         if check_in_db_map(model):
             #raise Exception('writes not allowed')
             return DB_MAP[(model._meta.app_label, model._meta.db_table)]
         return None
-    
+
     def allow_relation(self, obj1, obj2, **hints):
         "Allow any relation if a both models in chinook app"
         if check_in_db_map(obj1) and check_in_db_map(obj2) and DB_MAP[(obj1._meta.app_label, obj1._meta.db_table)] == DB_MAP[(obj2._meta.app_label, obj2._meta.db_table)]:
             return True
-        elif not check_in_db_map(obj1) and not check_in_db_map(obj2): 
+        elif not check_in_db_map(obj1) and not check_in_db_map(obj2):
             return True
         return False
-    
+
     def allow_syncdb(self, db, model):
         if db == 'sdb' or db == 'scripts_rooming' or check_in_db_map(model):
             return False

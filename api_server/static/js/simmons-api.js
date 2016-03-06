@@ -117,14 +117,16 @@
 }));
 
 
+<!-- End Cookie Pluigin -->
 
-sim = new function () { 
+
+sim = new function () {
     var clientid;
     var is_authenticated = false;
 
     this.init = function(options) {
         if (!('clientid' in options)) {
-            console.error('clienid is a required argument to Simmons.init()');
+            console.error('clientid is a required argument to Simmons.init()');
             return;
         }
 
@@ -132,6 +134,7 @@ sim = new function () {
     };
 
     this.login = function() {
+        console.log($.cookie('access_token'));
         if ($.cookie('access_token') == undefined && window.location.hash.indexOf('access_token') == -1) {
             var link = 'https://simmons-dev.mit.edu/api/o/authorize/?response_type=token&client_id=' + clientid + '&redirect_uri=' + encodeURIComponent(window.location.href);
             window.location = link;
@@ -140,6 +143,7 @@ sim = new function () {
             access_token = access_token.substr(0, access_token.indexOf('&'));
             //console.log(access_token);
             $.cookie('access_token', access_token);
+            location.reload();
         }
         //parent.location.hash = '';
         history.pushState("", document.title, parent.location.pathname + parent.location.search);
@@ -158,16 +162,31 @@ sim = new function () {
         xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('access_token'));
     }
 
+    var serverErrorModalShown = false;
     function api_error_callback(x, status, error) {
         if (x.status == 403) {
             if ($.cookie('access_token') != undefined) {
                 $.removeCookie('access_token');
+                if ($.cookie('retry_attempt') != undefined && parseInt($.cookie('retry_attempt')) > 2)
+                    window.location = 'https://simmons-dev.mit.edu/api/403';
+                    //console.error('Unable to login to Simmons API, please contact simmons-tech@mit.edu, want to redirect to 403 10005');
+                else {
+                    $.cookie('retry_attempt', $.cookie('retry_attempt') == undefined ? 1 : parseInt($.cookie('retry_attempt')) + 1, { expires: new Date(10000) });
+                    sim.login();
+                }
                 sim.login();
             } else {
-                alert('Unable to login to Simmons API, please contact simmons-tech@mit.edu');
+                //window.location = 'https://simmons-dev.mit.edu/api/403'
+                console.error('Unable to login to Simmons API, please contact simmons-tech@mit.edu, want to redirect to 403');
             }
         } else {
-            console.error('API call failed: ' + status + ' ' + error);
+            if (!serverErrorModalShown)
+                $('<div class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">The new DB is down :\'(</h4></div><div class="modal-body">There seems to be a problem contacting the Simmons Skynet Server, while we are fixing this problem please use the old DB.</div><div class="modal-footer"><a class="btn btn-danger" href="http://simmons.mit.edu/sds/">Goto Old DB &gt; &gt; &gt;</a></div></div></div></div>').modal({
+                    backdrop: 'static',
+                    keyboard: false,
+                })
+            serverErrorModalShown = true;
+            console.error('Server Error: ' + status + error);
         }
     }
 
@@ -184,6 +203,7 @@ sim = new function () {
     };
 
     this.people.get = function(username, success) {
+        console.log(username);
         $.ajax({
             url: 'https://simmons-dev.mit.edu/api/people/profile/' + encodeURIComponent(username),
             dataType: 'json',
@@ -216,6 +236,41 @@ sim = new function () {
         }).error(api_error_callback);
     };
 
+    this.people.medlinks = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/people/medlinks',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
+            //console.log(data);
+            success(data);
+        }).error(api_error_callback);
+    }
+
+    this.people.grts = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/people/grts',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
+            //console.log(data);
+            success(data);
+        }).error(api_error_callback);
+    }
+
+    /** PACKAGES **/
+    this.packages = new function() { };
+    this.packages.notify = function(success) {
+    	$.ajax({
+    		url: 'https://simmons-dev.mit.edu/api/packages/notify',
+    		dataType: 'json',
+    		beforeSend: setHeader
+    	}).done(function (data) {
+    		console.log(data);
+    		success(data);
+    	}).error(api_error_callback);
+    }
+
     /** ROOMING **/
     this.rooming = new function() { };
     this.rooming.taken = function(success) {
@@ -235,6 +290,18 @@ sim = new function () {
             beforeSend: setHeader
         }).done(function (data) {
             //console.log(data);
+            success(data);
+        }).error(api_error_callback);
+    }
+
+    /** GUESTLIST **/
+    this.guestlist = new function() { };
+    this.guestlist.me = function(success) {
+        $.ajax({
+            url: 'https://simmons-dev.mit.edu/api/guestlist/me',
+            dataType: 'json',
+            beforeSend: setHeader
+        }).done(function (data) {
             success(data);
         }).error(api_error_callback);
     }

@@ -33,7 +33,7 @@ DATABASES = {
         'NAME': 'sdb',
         'USER': 'api',
         'PASSWORD': _sdb_password,
-        'HOST': 'seagull.mit.edu',
+        'HOST': 'simmons.mit.edu',#:'seagull.mit.edu',
         'PORT': 5432,
     },
     'scripts_rooming': {

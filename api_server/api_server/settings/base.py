@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'packages',
     'sevenk',
     'rooming',
+    'lounges',
+    'guestlist',
 ]
 
 ROOT_URLCONF = 'api_server.urls'

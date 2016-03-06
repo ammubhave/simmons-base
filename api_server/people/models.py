@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+#from lounges.models import Lounge
 from api_server.sdb_utils import NullableCharField
 #rom api_server.sdb_utils import SdbManager
 
@@ -45,9 +46,9 @@ class Directory(models.Model):
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
 
     email = models.CharField(max_length=255)
-    # lounge = models.ForeignField()
+    lounge = models.ForeignKey('lounges.Lounge', db_column='lounge', blank=True, null=True)
     title = NullableCharField(max_length=255, null=True, blank=True)
-    # loungevalue = models.IntegerField(null=True, blank=True)
+    loungevalue = models.IntegerField(null=True, blank=True)
     # showreminders = models.BooleanField(default=True)
     # guest_list_expiration = models.CharField(null=True, blank=True, max_length=255)
 
@@ -74,3 +75,31 @@ class Directory(models.Model):
 
     def __unicode__(self):
         return '%s %s (%s)' % (self.firstname, self.lastname, self.username)
+
+
+class MedlinkManager(models.Manager):
+    def get_queryset(self):
+        return super(MedlinkManager, self).get_query_set().filter(removed=None)
+
+
+class Medlink(models.Model):
+    officerid = models.AutoField(primary_key=True)
+    #username = models.CharField(max_length=255)
+    username = models.ForeignKey(Directory, db_column='username')#, related_name='username')
+    ordering = models.IntegerField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    removed = models.DateTimeField(null=True, blank=True)
+
+    objects = MedlinkManager()
+
+    def delete(self, *args, **kwargs):
+        raise Exception('You should not be calling delete on this model (medlink)')
+
+    class Meta:
+        db_table = 'medlinks'
+        managed = False
+        verbose_name = 'Medlink'
+        verbose_name_plural = 'Medlinks'
+
+    def __unicode__(self):
+        return str(self.username)# '%s %s (%s)' % (self.username.firstname, self.username.lastname, self.username)

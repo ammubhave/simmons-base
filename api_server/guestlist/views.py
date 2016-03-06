@@ -2,7 +2,8 @@ from django.core import serializers
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.shortcuts import render
 from oauth2_provider.decorators import protected_resource
-from people.models import Directory, Medlink
+from people.models import Directory
+from guestlist.models import Guestlist
 from lounges.models import Lounge
 import simplejson as json
 from oauth2_provider.views import ProtectedResourceView
@@ -10,78 +11,28 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 @protected_resource()
-def full(request):
-    result = Directory.objects.all()
-    result = [{
-        'username': entry.username,
-        'firstname': entry.firstname,
-        'lastname': entry.lastname,
-        'title': entry.title,
-        'room': entry.room,
-        'year': str(entry.year),
-        'type': entry.get_type_display(),
-        'lounge': entry.lounge.description if entry.lounge else None,
-    } for entry in result]
-    return JsonResponse(result, safe=False)
-
-@protected_resource()
-def get_fifteen_seconds_of_frame(request):
-    result = Directory.random()
-    result = {
-        'username': result.username,
-        'firstname': result.firstname,
-        'lastname': result.lastname,
-        'title': result.title,
-        'year': str(result.year),
-        'type': result.get_type_display(),
-        'homepage': result.homepage,
-        'home_city': result.home_city,
-        'home_state': result.home_state,
-        'home_country': result.home_country,
-        'quote': result.quote,
-    }
-    return JsonResponse(result, safe=False)
-
-@protected_resource()
-def medlinks(request):
-    result = list(Medlink.objects.filter(removed=None).order_by('ordering').values_list('username', flat=True))
-    return JsonResponse(result, safe=False)
-
-@protected_resource()
-def grts(request):
-    _result = Directory.objects.filter(type=Directory.GRT)
-    result = []
-    for entry in _result:
-        try:
-            entry.lounge = entry.lounge
-        except:
-            entry.lounge = Lounge(description='None')
-        result.append(entry.username)
-    return JsonResponse(result, safe=False)
-
-@protected_resource()
 def me(request):
-    #raise Exception(str(request.user.is_authenticated()))
-    result = Directory.objects.get(username=request.user.username)
+    result = Guestlist.objects.filter(username=request.user.username).order_by('guest')
 
-    result = {
-        'username': result.username,
-        'firstname': result.firstname,
-        'lastname': result.lastname,
-        'title': result.title,
-        'room': result.room,
-        'year': str(result.year),
-        'type': result.get_type_display(),
-        'lounge': result.lounge.description if result.lounge is not None else 'None',
-        'homepage': result.homepage,
-        'home_city': result.home_city,
-        'home_state': result.home_state,
-        'home_country': result.home_country,
-        'quote': result.quote,
-    }
+    result = [guest.guest for guest in result]
     return JsonResponse(result, safe=False)
 
-class Profile(ProtectedResourceView):
+@protected_resource
+def add(request):
+    guest = request.POST['guest']
+
+    # Do not add duplicate records
+    if len(Guestlist.objects.filter(username=request.user.username, guest=guest)) > 0:
+        return JsonResponse({'success': False, 'err': 'duplicate'})
+
+    count = len(Guestlist.objects.filter(username=request.user.username))
+    if count >= 25:
+        return JsonResponse({'success': False, 'err': 'limit exceeded'})
+
+    Guestlist.objects.create(username=request.user.username, guest=guest)
+    return JsonResponse({'success': True, 'err': 'ok'})
+
+class DeUser(ProtectedResourceView):
     def get(self, request, username):
         result = Directory.objects.get(username=username)
 
