@@ -17,5 +17,5 @@ RewriteRule ^$ api_server/api_server/wsgi.py [L,E=HTTP_AUTHORIZATION:%{HTTP:Auth
 RewriteCond %{REQUEST_URI} !/api/api_server/api_server/wsgi.py
 RewriteRule ^(.*)$ api_server/api_server/wsgi.py/$1 [L,E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-SSLVerifyClient optional
+SSLVerifyClient optional 
 SSLOptions +StdEnvVars

@@ -18,7 +18,7 @@ EXTERNAL_CONFIG = os.environ.get('EXTERNAL_CONFIG', None)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
+    #'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -29,9 +29,12 @@ INSTALLED_APPS = [
     'people',
     'packages',
     'sevenk',
-    'rooming',
+#    'rooming',
     'lounges',
     'guestlist',
+    'auth',
+    'sdb',
+    'govtracker',
 ]
 
 ROOT_URLCONF = 'api_server.urls'
@@ -70,4 +73,16 @@ CORS_ALLOW_HEADERS = (
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
+    os.path.join(os.path.join(BASE_DIR, 'sdb'), 'templates'),
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.debug',
+    'django.core.context_processors.request',
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+  # ...
+)
+
+AUTH_USER_MODEL = 'auth.SdbUser'

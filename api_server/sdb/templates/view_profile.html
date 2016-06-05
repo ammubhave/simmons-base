@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container" style="padding-top: 30px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div style="border-bottom: 1px solid transparent; border-top-right-radius: 3px; border-top-left-radius: 3px; height: 150px; background-size: cover; background-image: url(http://web.mit.edu/facilities/photos/construction/Projects/simmons/1_large.jpg);"></div>
+        <div class="panel-body" style="text-align: center">
+            <a href="profile/">
+              <img class="aoh" src="https://pbs.twimg.com/profile_images/552830404520980480/PV0BB9v7.jpeg">
+            </a>
+
+            <h5 class="qy">
+              <em>{{profile.title}}</em> {{ profile.firstname }} {{profile.lastname}}
+            </h5><br/>
+            <ul class="aoi">
+              <li class="aoj">
+                  Room
+                  <h5 class="ali">{{profile.room}}</h5>
+              </li>
+
+              <li class="aoj">
+                  Year
+                  <h5 class="ali">{{profile.year}}</h5>
+              </li>
+            </ul>
+            <table class="table">
+              {% if profile.homepage != '' %}
+              <tr>
+                <th style="text-align: right">Homepage</th>
+                <td style="text-align: left">{{profile.homepage}}</td>
+              </tr>
+              {% endif %}
+              {% if profile.cellphone != '' %}
+              <tr>
+                <th style="text-align: right">Cellphone</th>
+                <td style="text-align: left">{{profile.cellphone}}</td>
+              </tr>
+              {% endif %}
+              {% if profile.home_city != '' or profile.home_state != '' or profile.home_country != '' %}
+              <tr>
+                <th style="text-align: right">Hometown</th>
+                <td style="text-align: left">{{profile.home_city}} {{profile.home_state}} {{profile.home_country}}</td>
+              </tr>
+              {% endif %}
+            </table>
+
+              {% if profile.favorite_category != '' and profile.favorite_value != '' %}
+              <p><strong>My favorite</strong> {{profile.favorite_category}} <strong>is</strong> {{profile.favorite_value}}</p>
+              {% endif %}
+            <p class="alu"></p><p>{{profile.quote|linebreaks}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -7,7 +7,7 @@ from api_server.sdb_utils import NullableCharField
 
 class DirectoryManager(models.Manager):
     def get_queryset(self):
-        return super(DirectoryManager, self).get_query_set().filter(username__in=[u.username for u in User.objects.all()])
+        return super(DirectoryManager, self).get_query_set().filter(username__in=[u.username for u in User.objects.all()], active=True)
 
 
 class Directory(models.Model):
@@ -49,8 +49,8 @@ class Directory(models.Model):
     lounge = models.ForeignKey('lounges.Lounge', db_column='lounge', blank=True, null=True)
     title = NullableCharField(max_length=255, null=True, blank=True)
     loungevalue = models.IntegerField(null=True, blank=True)
-    # showreminders = models.BooleanField(default=True)
-    # guest_list_expiration = models.CharField(null=True, blank=True, max_length=255)
+    showreminders = models.BooleanField(default=True)
+    guest_list_expiration = models.CharField(null=True, blank=True, max_length=255)
 
     #def save(self, *args, **kwargs):
     #    return
@@ -68,7 +68,7 @@ class Directory(models.Model):
     #objects = SdbManager()
 
     class Meta:
-        db_table = 'public_active_directory'
+        db_table = 'directory' #'public_active_directory'
         managed = False
         verbose_name = 'Directory Entry'
         verbose_name_plural = 'Directory Entries'
@@ -103,3 +103,32 @@ class Medlink(models.Model):
 
     def __unicode__(self):
         return str(self.username)# '%s %s (%s)' % (self.username.firstname, self.username.lastname, self.username)
+
+
+class OfficerManager(models.Manager):
+    def get_queryset(self):
+        return super(OfficerManager, self).get_query_set().filter(removed=None)
+
+
+class Officer(models.Model):
+    officerid = models.AutoField(primary_key=True)
+    username = models.ForeignKey(Directory, db_column='username')
+    position = models.TextField()
+    ordering = models.IntegerField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    removed = models.DateTimeField(null=True, blank=True)
+    position_text = models.TextField(null=True, blank=True)
+
+    objects = OfficerManager()
+
+    def delete(self, *args, **kwargs):
+        raise Exception('You should not be calling delete on this model (officers)')
+
+    class Meta:
+        db_table = 'officers'
+        managed = False
+        verbose_name = 'Officer'
+        verbose_name_plural = 'Officers'
+
+    def __unicode__(self):
+        return str(self.username) + ' (' + self.position + ') '# '%s %s (%s)' % (self.username.firstname, self.username.lastname, self.username)

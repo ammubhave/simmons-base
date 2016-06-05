@@ -12,6 +12,9 @@ class GRT(models.Model):
         num_already_in_grt = len([x for x in grt_rooms if x.full()])
         return num_already_in_grt >= num_in_grt - self.min_freshmen_doubles
 
+    class Meta:
+        managed = False
+
 class Room(models.Model):
     number = models.CharField(max_length=5, unique = True)
     max_occupancy = models.IntegerField()
@@ -43,6 +46,8 @@ class Room(models.Model):
         
     def __unicode__(self):
         return "Room "+ self.number
+    class Meta:
+        managed = False
 
 class Resident(models.Model):
     first_name = models.CharField(max_length=20)
@@ -53,4 +58,7 @@ class Resident(models.Model):
 
     def __unicode__(self):
         return self.first_name + self.last_name + "(" + self.athena + ")"
+
+    class Meta:
+        managed = False
 

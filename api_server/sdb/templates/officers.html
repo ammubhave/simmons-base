@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<script src="https://simmons.mit.edu/officers/js/offices.js"></script>
+
+<script>
+    jQuery(document).ready(function($) {
+      $(".tile").each(function() {
+        var tile = Tile(this.id);
+        $(this).append(tile);
+      });
+      $(".dark").click(function() {
+        Hide();
+      });
+      $(".tile").click(function() {
+        Show(this.id);
+      });
+    });
+
+  function Show(role) {
+    var html = Overlay(role);
+    $(".overlay").html(html);
+    $(".overlay").show();
+    $(".dark").show();
+    $("body").addClass("noscroll");
+  }
+
+  function Hide() {
+    $(".overlay").hide();
+    $(".dark").hide();
+    $("body").removeClass("noscroll");
+  }
+
+  function Overlay(role) {
+    var persons = incumbents[role];
+    var office = offices[role];
+    var html = '<div id="' + role + '">\
+                  <div class="box ' + role + '">\
+                    <div class="color">\
+                      <img class="x" src="img/icons/x.png" onclick="Hide();">\
+                      <a href="img/photos/' + people[persons[0]].photo + '" target="_blank"><img class="photo" src="img/photos/' + people[persons[0]].photo + '"></a>\
+                      <div class="persons-info">';
+    // Info for each person
+    for (i = 0; i < persons.length; i++) {
+      person = people[persons[i]]
+      html += '<div class="person-info">\
+                <div class="name">' + person.full_name + ((person.year) ? " '" + person.year[2] + person.year[3] : '') + '</div>'
+                + ((person.room)     ? '<div class="room">Room ' + person.room + '</div>' : '')
+                + ((person.phone)    ? '<div class="phone">' + person.phone + '</div>' : '')
+                + ((person.email)    ? '<div class="email"><a href="mailto:' + person.email + '">' + person.email + '</a></div>' : '')
+                + ((person.facebook) ? '<a href="' + person.facebook + '" target="_blank"><img class="facebook-icon" src="img/icons/fcbk.jpg"></a>' : '') + '\
+              </div>';
+    }
+    html +=  '</div>\
+              <div class="role">' + office.full_title + '</div>\
+              <div class="description"><div class="scrollable">' + office.description + '</div></div>\
+            </div>\
+          </div>\
+        </div>';
+    return html;
+  }
+
+  function Tile(role) {
+    var persons = incumbents[role];
+    var office = offices[role];
+
+    var name = people[persons[0]].name;
+    // Add additional names
+    if (persons.length > 1) {
+      for (i = 1; i < persons.length; i++) {
+        person = people[persons[i]];
+        name += "/" + person.name;
+      }
+    }
+
+    var html = '<div class="person ' + role +  '">\
+                  <div class="color"></div>\
+                  <img class="photo" src="img/photos/' + people[persons[0]].photo + '">\
+                  <div class="name">' + name + '</div>\
+                  <div class="role">' + office.title + '</div>\
+                </div>';
+    return html;
+  }
+
+  </script>
+
+
+<div class="container" style="padding-top: 30px">
+  <div class="row">
+    <div class="col-md-12" style="background-image: url('https://simmons.mit.edu/officers/img/bg.png');
+    background-position: 0px 60px;
+    background-repeat: no-repeat;    width: 1002px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 24px 0;
+    font-weight: 400;
+    font-size: 14px;    font-family: Lato, sans-serif;">
+
+    {% for officer_position in all_officers %}
+      {% if officer_position.position == 'blank' %}
+      <div class="blank"></div>
+      {% else %}
+      <div class="tile" id="{{ officer_position.position }}">
+        <div class="person {{ officer_position.position }}">
+          <div class="color"></div>
+          <img class="photo" src="https://simmons.mit.edu/officers/img/photos/{% for officer in officer_position.officers %}{{ officer.username }}{% if not forloop.last %}_{% endif %}{% endfor %}.jpg">
+          <div class="name">{% for officer in officer_position.officers %}{{ officer.firstname }}{% if not forloop.last %}/{% endif %}{% endfor %}</div>
+          <div class="role">{{ officer_position.position_text }}</div>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

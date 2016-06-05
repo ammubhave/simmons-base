@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Directory, Medlink
+from models import Directory, Medlink, Officer
 from api_server.sdb_models import SDB_sds_users_all
 from django.utils.http import quote
 from django import forms
@@ -82,7 +82,7 @@ admin.site.register(Directory, DirectoryModelAdmin)
 
 class MedlinkModelAdmin(admin.ModelAdmin):
     search_fields = ('username__username', 'username__firstname', 'username__lastname')
-    raw_id_fields = ('username')
+    raw_id_fields = ('username',)
     # def view_on_site(self, obj):
     #     return 'https://seagull.mit.edu/sds/directory/entry.php?username=' + quote(str(obj.username))
     
@@ -93,3 +93,18 @@ class MedlinkModelAdmin(admin.ModelAdmin):
         raise Exception('delete on this model is not permitted.')
 
 admin.site.register(Medlink, MedlinkModelAdmin)
+
+
+class OfficerModelAdmin(admin.ModelAdmin):
+    search_fields = ('username__username', 'username__firstname', 'username__lastname', 'position', 'position_text')
+    raw_id_fields = ('username',)
+    # def view_on_site(self, obj):
+    #     return 'https://seagull.mit.edu/sds/directory/entry.php?username=' + quote(str(obj.username))
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def delete_model(self, request, obj):
+        raise Exception('delete on this model is not permitted.')
+
+admin.site.register(Officer, OfficerModelAdmin)

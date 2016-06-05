@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container" style="padding-top: 30px">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="color: #25aae1">Balance</div>
+        <div class="panel-body" style="padding: 45px; text-align: center; color: white; background-color: #6bb97d">
+          <h1>$54,000.11</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="color: #25aae1">Unallocated</div>
+        <div class="panel-body" style="padding: 45px; text-align: center; color: white; background-color: #25aae1">
+          <h1>$10,000.03</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+    </div>
+  </div>
+</div>
+
+{% endblock %}

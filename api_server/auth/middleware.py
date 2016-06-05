@@ -3,6 +3,7 @@ from django.contrib.auth import load_backend
 from django.contrib.auth.middleware import RemoteUserMiddleware
 from django.core.exceptions import ImproperlyConfigured
 from backend import SimmonsAuthBackend
+from people.models import Directory
 
 class SimmonsAuthMiddleware(RemoteUserMiddleware):
     header = "SSL_CLIENT_S_DN_Email"
@@ -46,6 +47,7 @@ class SimmonsAuthMiddleware(RemoteUserMiddleware):
         # persisted in the session and we don't need to continue.
         if request.user.is_authenticated():
             if request.user.get_username() == self.clean_username(username, request):
+                request.profile = Directory.objects.get(username=request.user.username)
                 return
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
@@ -55,3 +57,4 @@ class SimmonsAuthMiddleware(RemoteUserMiddleware):
             # by logging the user in.
             request.user = user
             auth.login(request, user)
+            request.profile = Directory.objects.get(username=request.user.username)

@@ -32,8 +32,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'sdb',
         'USER': 'api',
-        'PASSWORD': _sdb_password,
-        'HOST': 'simmons.mit.edu',#:'seagull.mit.edu',
+        'PASSWORD': _db_password,# _sdb_password,
+        'HOST': '127.0.0.1', #'simmons-dev.mit.edu',#:'seagull.mit.edu',
         'PORT': 5432,
     },
     'scripts_rooming': {

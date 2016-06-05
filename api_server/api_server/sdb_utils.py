@@ -17,14 +17,30 @@ DB_MAP = {
     ('people', 'public_active_directory'): 'sdb',
     ('people', 'sds_users_all'): 'sdb',
     ('people', 'medlinks'): 'sdb',
+    ('people', 'officers'): 'sdb',
     ('packages', 'packages'): 'sdb',
     ('guestlist', 'guest_list'): 'sdb',
     ('api_server', 'sds_users_all'): 'sdb',
+    ('api_server', 'sds_groups'): 'sdb',
+    ('api_server', 'sds_group_membership_cache'): 'sdb',
+    ('auth', 'sds_users_all'): 'sdb',
+    ('auth', 'sds_groups'): 'sdb',
+    ('admin', 'django_admin_log'): 'sdb',
+    ('govtracker', 'gov_fin_accounts'): 'sdb',
+    ('govtracker', 'gov_fin_subaccounts'): 'sdb',
+    ('govtracker', 'gov_fin_ledger'): 'sdb',
 
     ('rooming', 'rooming_room'): 'scripts_rooming',
     ('rooming', 'rooming_grt'): 'scripts_rooming',
     ('rooming', 'rooming_resident'): 'scripts_rooming',
 }
+
+READONLY_TABLES = (
+    ('api_server', 'sds_groups'),
+    ('api_server', 'sds_users_all'),
+    ('auth', 'sds_users_all'),
+    #('api_server', 'sds_group_membership_cache'),
+)
 
 def check_in_db_map(model):
     return (model._meta.app_label, model._meta.db_table) in DB_MAP
@@ -34,15 +50,21 @@ def check_in_db_map(model):
 
 class SdbRouter(object):
     def db_for_read(self, model, **hints):
+        #if model._meta.app_label == 'oauth2_provider':
+        #    raise Exception(model._meta.db_table)
         if check_in_db_map(model):
             return DB_MAP[(model._meta.app_label, model._meta.db_table)] #'sdb'
-        return None
+        return 'default'
 
     def db_for_write(self, model, **hints):
+        #if model._meta.app_label == 'oauth2_provider':
+        #    raise Exception(model._meta.db_table)
         if check_in_db_map(model):
             #raise Exception('writes not allowed')
+            if (model._meta.app_label, model._meta.db_table) in READONLY_TABLES:
+                raise Exception('writes not allowed to a readonly table')
             return DB_MAP[(model._meta.app_label, model._meta.db_table)]
-        return None
+        return 'default'
 
     def allow_relation(self, obj1, obj2, **hints):
         "Allow any relation if a both models in chinook app"

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.backends import RemoteUserBackend
-from django.contrib.auth.models import User
+from auth.models import SdbUser as User
 import logging
 
 class SimmonsAuthBackend(RemoteUserBackend):
@@ -14,9 +14,9 @@ class SimmonsAuthBackend(RemoteUserBackend):
 
     def authenticate(self, remote_user=None):
        # raise Exception(remote_user)
-        logging.info('autheticate(' + remote_user + ')')
+        logging.info('authenticate(' + remote_user + ')')
         try:
-            user = User.objects.get(username=remote_user)
+            user = User.objects.get(username=remote_user, is_active=True)
             return user
         except User.DoesNotExist:
             pass

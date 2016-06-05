@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'api_server.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
+    url(r'^sdb/', include('sdb.urls')),
     url(r'^people/', include('people.urls')),
     url(r'^packages/', include('packages.urls')),
     url(r'^guestlist/', include('guestlist.urls')),

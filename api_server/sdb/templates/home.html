@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container" style="padding-top: 30px">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div style="border-bottom: 1px solid transparent; border-top-right-radius: 3px; border-top-left-radius: 3px; height: 150px; background-size: cover; background-image: url(http://web.mit.edu/facilities/photos/construction/Projects/simmons/1_large.jpg);"></div>
+        <div class="panel-body" style="text-align: center">
+            <a href="profile/">
+              <img class="aoh" src="https://pbs.twimg.com/profile_images/552830404520980480/PV0BB9v7.jpeg">
+            </a>
+
+            <h5 style="font-size: 16px; margin-bottom: 6px">
+              <em>{{ request.profile.title }}</em> {{ request.profile.firstname }} {{ request.profile.lastname }}
+            </h5>
+            <h6 style="margin-top: 6px;">
+              <a href="mailto:{{ request.profile.email }}">{{ request.profile.email }}</a>
+            </h6>
+            <br />
+            <ul class="aoi">
+              <li class="aoj">
+                  Room
+                  <h5 class="ali">{{request.profile.room}}</h5>
+              </li>
+
+              <li class="aoj">
+                  Year
+                  <h5 class="ali">{{request.profile.year}}</h5>
+              </li>
+            </ul>
+
+            <p class="alu"></p><p>{{ request.profile.quote|linebreaks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="jumbotron">
+        <h1>Welcome, {{ request.profile.firstname }}</h1>
+        <p>Welcome to Simmons DB, a magical play land of mystery and fun. If you have trouble with something, email <a href="mailto:simmons-tech@mit.edu">simmons-tech@mit.edu</a>, your friendly, teddy-bear-like guide to all things simmons-tech.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="by amt">
+  <div class="gc">
+    <div class="gz">
+      <ul class="ca qo anx">
+
+        <li class="qf b aml">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Message">
+            <div class="fj">
+              <button type="button" class="cg fm">
+                <span class="h xi"></span>
+              </button>
+            </div>
+          </div>
+        </li>
+
+        <li class="qf b aml">
+          <a class="qj" href="#">
+            <img
+              class="qh cu"
+              src="assets/img/avatar-dhg.png">
+          </a>
+          <div class="qg">
+            <div class="qn">
+              <small class="eg dp">4 min</small>
+              <h5>Dave Gamache</h5>
+            </div>
+
+            <p>
+              Aenean lacinia bibendum nulla sed consectetur. Vestibulum id ligula porta felis euismod semper. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+            </p>
+
+            <div class="any" data-grid="images">
+              <div style="display: none">
+                <img data-action="zoom" data-width="1050" data-height="700" src="assets/img/unsplash_1.jpg">
+              </div>
+
+              <div style="display: none">
+                <img data-action="zoom" data-width="640" data-height="640" src="assets/img/instagram_1.jpg">
+              </div>
+
+              <div style="display: none">
+                <img data-action="zoom" data-width="640" data-height="640" src="assets/img/instagram_13.jpg">
+              </div>
+
+              <div style="display: none">
+                <img data-action="zoom" data-width="1048" data-height="700" src="assets/img/unsplash_2.jpg">
+              </div>
+            </div>
+
+            <ul class="qo alm">
+              <li class="qf">
+                <a class="qj" href="#">
+                  <img
+                    class="qh cu"
+                    src="assets/img/avatar-fat.jpg">
+                </a>
+                <div class="qg">
+                  <strong>Jacon Thornton: </strong>
+                  Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
+                </div>
+              </li>
+              <li class="qf">
+                <a class="qj" href="#">
+                  <img
+                    class="qh cu"
+                    src="assets/img/avatar-mdo.png">
+                </a>
+                <div class="qg">
+                  <strong>Mark Otto: </strong>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="qf b aml">
+          <a class="qj" href="#">
+            <img
+              class="qh cu"
+              src="assets/img/avatar-fat.jpg">
+          </a>
+          <div class="qg">
+            <div class="aoc">
+              <div class="qn">
+                <small class="eg dp">12 min</small>
+                <h5>Jacob Thornton</h5>
+              </div>
+              <p>
+                Donec id elit non mi porta gravida at eget metus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </p>
+            </div>
+          </div>
+        </li>
+
+        <li class="qf b aml">
+          <a class="qj" href="#">
+            <img
+              class="qh cu"
+              src="assets/img/avatar-mdo.png">
+          </a>
+          <div class="qg">
+            <div class="qn">
+              <small class="eg dp">34 min</small>
+              <h5>Mark Otto</h5>
+            </div>
+
+            <p>
+              Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+            </p>
+
+            <div class="any" data-grid="images">
+              <img style="display: none" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_3.jpg">
+            </div>
+
+            <ul class="qo">
+              <li class="qf">
+                <a class="qj" href="#">
+                  <img
+                    class="qh cu"
+                    src="assets/img/avatar-dhg.png">
+                </a>
+                <div class="qg">
+                  <strong>Dave Gamache: </strong>
+                  Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="gn">
+      <div class="alert pv alert-dismissible ss" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <a class="pr" href="profile/">Visit your profile!</a> Check your self, you aren't looking too good.
+      </div>
+
+      <div class="qv rc alu ss">
+        <div class="qw">
+          <h5 class="ald">Sponsored</h5>
+          <div data-grid="images" data-target-height="150">
+            <img class="qh" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg">
+          </div>
+          <p><strong>It might be time to visit Iceland.</strong> Iceland is so chill, and everything looks cool here. Also, we heard the people are pretty nice. What are you waiting for?</p>
+          <button class="cg ts fx">Buy a ticket</button>
+        </div>
+      </div>
+
+      <div class="qv rc alu ss">
+        <div class="qw">
+        <h5 class="ald">Likes <small>· <a href="#">View All</a></small></h5>
+        <ul class="qo anx">
+          <li class="qf alm">
+            <a class="qj" href="#">
+              <img
+                class="qh cu"
+                src="assets/img/avatar-fat.jpg">
+            </a>
+            <div class="qg">
+              <strong>Jacob Thornton</strong> @fat
+              <div class="aoa">
+                <button class="cg ts fx">
+                  <span class="h vc"></span> Follow</button>
+              </div>
+            </div>
+          </li>
+           <li class="qf">
+            <a class="qj" href="#">
+              <img
+                class="qh cu"
+                src="assets/img/avatar-mdo.png">
+            </a>
+            <div class="qg">
+              <strong>Mark Otto</strong> @mdo
+              <div class="aoa">
+                <button class="cg ts fx">
+                  <span class="h vc"></span> Follow</button></button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        </div>
+        <div class="qz">
+          Dave really likes these nerds, no one knows why though.
+        </div>
+      </div>
+
+      <div class="qv rc aok">
+        <div class="qw">
+          © 2015 Bootstrap
+
+          <a href="#">About</a>
+          <a href="#">Help</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Cookies</a>
+          <a href="#">Ads </a>
+
+          <a href="#">info</a>
+          <a href="#">Brand</a>
+          <a href="#">Blog</a>
+          <a href="#">Status</a>
+          <a href="#">Apps</a>
+          <a href="#">Jobs</a>
+          <a href="#">Advertise</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}}

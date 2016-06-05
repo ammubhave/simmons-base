@@ -7,8 +7,8 @@ class Lounge(models.Model):
     lounge = models.CharField(max_length=255, primary_key=True)
     description = models.TextField()
     url = models.TextField()
-    contact = models.ForeignKey(Directory, db_column='contact')
-    contact2 = models.ForeignKey(Directory, db_column='contact2', null=True, blank=True)
+    contact = models.ForeignKey(Directory, db_column='contact', related_name='lounge1')
+    contact2 = models.ForeignKey(Directory, db_column='contact2', null=True, blank=True, related_name='lounge2')
     active = models.BooleanField(default=True)
     allocation = models.DecimalField(max_digits=10, decimal_places=2)
 

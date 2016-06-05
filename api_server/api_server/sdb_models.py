@@ -27,3 +27,32 @@ class SDB_old_room_assignments(models.Model):
         db_table = 'old_room_assignments'
         managed = False
         unique_together = []
+
+class SDB_sds_groups(models.Model):
+    groupname = models.CharField(max_length=255, primary_key=True)
+    contact = models.CharField(max_length=255)
+    adhoc = models.BooleanField(default=False, null=False)
+    description = models.TextField()
+    active = models.BooleanField(default=True, null=False)
+
+    class Meta:
+        db_table = 'sds_groups'
+        managed = False
+
+    def __unicode__(self):
+        return self.groupname
+
+class SDB_sds_group_membership_cache(models.Model):
+    #username = models.ForeignKey(SDB_sds_users_all, primary_key=True, db_column='username', related_name='username')
+    #groupname = models.ForeignKey(SDB_sds_groups, db_column='groupname', related_name='groupname')
+    username = models.ForeignKey('auth.SdbUser', primary_key=True, db_column='username', related_name='groups_set')
+    groupname = models.ForeignKey('auth.SdbGroup', db_column='groupname', related_name='users_set')
+    hosts_allow = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'sds_group_membership_cache'
+        managed = False
+        unique_together = (("username", "groupname"))
+
+    def __unicode__(self):
+        return self.username + ' - ' + self.groupname
